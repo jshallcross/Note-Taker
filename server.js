@@ -14,7 +14,7 @@ app.use(express.json());
 
 // api routes
 
-app.get("/api/notes", function(req, res){
+app.get("/api/notes",(req, res) => {
     res.sendFile(path.join(__dirname, "/db/db.json"));
     });
 
@@ -31,8 +31,24 @@ app.post('/api/notes', (req, res) => {
 
 });
 
+app.delete('/api/notes/:id', (req, res) => {
+    let noteId = req.params.id;
+    console.log(noteId);
+    notes = fs.readFileSync('db/db.json');
+    notes = JSON.parse(notes);
+    notes = notes.filter((note) => {
+        if(noteId === note.id) {
+            return false;   
+        } else {
+            return true;
+        }
+    })
+        fs.writeFileSync('db/db.json', JSON.stringify(notes));
+        res.json(notes);
+});
+
 // html routes
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
